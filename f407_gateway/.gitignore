@@ -1,0 +1,22 @@
+# Python 字节码缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# Keil / STM32CubeMX 临时/构建产物(看你工程里是否需要)
+*.o
+*.d
+*.axf
+*.hex
+*.map
+*.lst
+*.crf
+*.htm
+*.dep
+*.uvguix.*
+
+# IDE/编辑器
+.idea/
+.vscode/
+*.user
+*.bak

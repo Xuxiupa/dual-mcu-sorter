@@ -1,0 +1,37 @@
+# ============ Keil MDK-ARM 构建产物 ============
+**/MDK-ARM/**/*.o
+**/MDK-ARM/**/*.d
+**/MDK-ARM/**/*.crf
+**/MDK-ARM/**/*.htm
+**/MDK-ARM/**/*.dep
+**/MDK-ARM/**/*.axf
+**/MDK-ARM/**/*.bin
+**/MDK-ARM/**/*.map
+**/MDK-ARM/**/Objects/
+**/MDK-ARM/**/Listings/
+
+# ============ WorkBuddy 项目数据（不公开） ============
+**/.workbuddy/
+
+# ============ Python ============
+__pycache__/
+*.pyc
+
+# ============ 临时目录 ============
+.pdf_tmp/
+
+# ============ 本地 TTS 副本（不进仓，docs/ 下为正式版） ============
+/项目讲解稿.md
+
+# ============ 个人求职材料（不公开） ============
+docs/简历技术亮点.md
+docs/简历项目描述.md
+docs/简历项目描述_分节版.md
+docs/简历项目描述_精简版.md
+docs/面试讲解.md
+
+# ============ OS / 编辑器 ============
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 760" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <!-- background -->
+  <rect x="0" y="0" width="1180" height="760" fill="#f7f9fc"/>
+
+  <!-- title -->
+  <text x="590" y="40" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a237e">双 MCU 工业物料分拣系统 — 架构图</text>
+  <text x="590" y="62" text-anchor="middle" font-size="13" fill="#546e7a">PC 上位机 ⇄ F407 协议网关(Modbus 从站 0x02 + 主站) ⇄ F103 执行端(Modbus 从站 0x01)</text>
+
+  <!-- ================= PC ================= -->
+  <rect x="60" y="300" width="200" height="140" rx="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
+  <text x="160" y="338" text-anchor="middle" font-size="16" font-weight="bold" fill="#0d47a1">PC 上位机</text>
+  <text x="160" y="364" text-anchor="middle" font-size="12" fill="#1565c0">sorter_gui.py</text>
+  <text x="160" y="384" text-anchor="middle" font-size="12" fill="#1565c0">live_view.py</text>
+  <text x="160" y="404" text-anchor="middle" font-size="12" fill="#1565c0">ModbusPoll</text>
+  <text x="160" y="424" text-anchor="middle" font-size="11" fill="#607d8b">读取 / 下发 / 黑匣子导出</text>
+
+  <!-- ================= F407 Gateway ================= -->
+  <rect x="420" y="80" width="340" height="620" rx="14" fill="#fff3e0" stroke="#f57c00" stroke-width="2.5"/>
+  <text x="590" y="112" text-anchor="middle" font-size="17" font-weight="bold" fill="#e65100">F407 网关 (STM32F407ZET6)</text>
+
+  <!-- FreeRTOS block -->
+  <rect x="438" y="128" width="304" height="196" rx="10" fill="#e8f5e9" stroke="#388e3c" stroke-width="2"/>
+  <text x="590" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b5e20">FreeRTOS 五任务 (CMSIS_V2)</text>
+  <text x="454" y="176" font-size="12.5" fill="#2e7d32">• GW_Task  (高优) 网关核心: 主站轮询+从站应答</text>
+  <text x="454" y="200" font-size="12.5" fill="#2e7d32">• UI_Task  (低优) OLED 渲染 + KEY 扫描</text>
+  <text x="454" y="224" font-size="12.5" fill="#2e7d32">• Alert_Task(中优) BEEP/LED 报警</text>
+  <text x="454" y="248" font-size="12.5" fill="#2e7d32">• BB_Task       黑匣子异步持久化</text>
+  <text x="454" y="272" font-size="12.5" fill="#2e7d32">• WD_Task  (Idle) 系统服务层看门狗</text>
+  <text x="454" y="300" font-size="11" fill="#558b2f">队列: g_q_rx(字节) / g_q_ev(事件) / g_q_bb(黑匣子)</text>
+
+  <!-- Peripherals block -->
+  <rect x="438" y="340" width="304" height="86" rx="10" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+  <text x="590" y="362" text-anchor="middle" font-size="14" font-weight="bold" fill="#4a148c">板载外设</text>
+  <text x="454" y="386" font-size="12" fill="#6a1b9a">I2C OLED (PB8/9,0x3C) · KEY(PA0/PE2-4)</text>
+  <text x="454" y="408" font-size="12" fill="#6a1b9a">LED(PF9/10) · BEEP(TIM13 PF8)</text>
+
+  <!-- W25Q64 -->
+  <rect x="438" y="440" width="304" height="74" rx="10" fill="#fff9c4" stroke="#f9a825" stroke-width="2"/>
+  <text x="590" y="468" text-anchor="middle" font-size="14" font-weight="bold" fill="#f57f17">W25Q64 故障黑匣子</text>
+  <text x="454" y="492" font-size="12" fill="#f9a825">SPI Flash · 事件码+时间戳</text>
+  <text x="454" y="510" font-size="12" fill="#f9a825">掉电 / 复位不丢</text>
+
+  <!-- IWDG -->
+  <rect x="438" y="528" width="304" height="74" rx="10" fill="#ffebee" stroke="#c62828" stroke-width="2"/>
+  <text x="590" y="556" text-anchor="middle" font-size="14" font-weight="bold" fill="#b71c1c">IWDG 看门狗 (2s)</text>
+  <text x="454" y="580" font-size="12" fill="#c62828">每秒巡检 4 任务心跳 · 独占喂狗</text>
+  <text x="454" y="598" font-size="12" fill="#c62828">超时→停喂→整机复位</text>
+
+  <!-- role tags -->
+  <rect x="438" y="616" width="148" height="34" rx="8" fill="#ffffff" stroke="#f57c00" stroke-width="1.5"/>
+  <text x="512" y="638" text-anchor="middle" font-size="12" font-weight="bold" fill="#e65100">对 PC: 从站 0x02</text>
+  <rect x="594" y="616" width="148" height="34" rx="8" fill="#ffffff" stroke="#f57c00" stroke-width="1.5"/>
+  <text x="668" y="638" text-anchor="middle" font-size="12" font-weight="bold" fill="#e65100">对 F103: 主站</text>
+
+  <!-- ================= F103 Exec ================= -->
+  <rect x="880" y="80" width="280" height="620" rx="14" fill="#e0f7fa" stroke="#0097a7" stroke-width="2.5"/>
+  <text x="1020" y="112" text-anchor="middle" font-size="17" font-weight="bold" fill="#006064">F103 执行端 (0x01)</text>
+
+  <!-- motor -->
+  <rect x="898" y="128" width="244" height="86" rx="10" fill="#ffe0b2" stroke="#ef6c00" stroke-width="2"/>
+  <text x="1020" y="154" text-anchor="middle" font-size="14" font-weight="bold" fill="#e65100">电机 + TB6612</text>
+  <text x="912" y="178" font-size="12" fill="#bf360c">TIM1 PWM (PA8) 开环调速 0~999</text>
+  <text x="912" y="200" font-size="12" fill="#bf360c">方向 AIN1/AIN2 = PB3/PB4</text>
+
+  <!-- servo -->
+  <rect x="898" y="230" width="244" height="64" rx="10" fill="#ffccbc" stroke="#d84315" stroke-width="2"/>
+  <text x="1020" y="256" text-anchor="middle" font-size="14" font-weight="bold" fill="#bf360c">舵机 SG90 (PA6 TIM3)</text>
+  <text x="912" y="280" font-size="12" fill="#d84315">回中 / A料道 / B料道</text>
+
+  <!-- sensors cluster -->
+  <rect x="898" y="310" width="244" height="232" rx="10" fill="#c8e6c9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="1020" y="334" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b5e20">多路传感器 (ADC)</text>
+  <text x="912" y="360" font-size="12.5" fill="#2e7d32">对射光电 → PA12 EXTI</text>
+  <text x="912" y="384" font-size="12.5" fill="#2e7d32">   (双层去抖: 上电1s+500ms重触发)</text>
+  <text x="912" y="412" font-size="12.5" fill="#2e7d32">光敏 LDR → PB0 (分类 A/B)</text>
+  <text x="912" y="436" font-size="12.5" fill="#2e7d32">反射红外 → PB1 (复检)</text>
+  <text x="912" y="460" font-size="12.5" fill="#2e7d32">热敏 NTC → PA4 (超温停机)</text>
+  <text x="912" y="488" font-size="11.5" fill="#558b2f">PA4/PB0/PB1 三路独立采样</text>
+  <text x="912" y="510" font-size="11.5" fill="#558b2f">(逐通道重配 Rank1)</text>
+
+  <!-- safety note -->
+  <rect x="898" y="558" width="244" height="64" rx="10" fill="#fff9c4" stroke="#f9a825" stroke-width="2"/>
+  <text x="1020" y="582" text-anchor="middle" font-size="13" font-weight="bold" fill="#f57f17">独立安全停机</text>
+  <text x="912" y="606" font-size="11.5" fill="#f9a825">网关静默 &gt;2s → 自行刹车</text>
+
+  <!-- ================= Links ================= -->
+  <!-- PC -> F407 -->
+  <line x1="260" y1="370" x2="418" y2="370" stroke="#1976d2" stroke-width="3" marker-end="url(#arrowB)"/>
+  <text x="339" y="360" text-anchor="middle" font-size="11.5" fill="#0d47a1">Modbus RTU 9600</text>
+  <text x="339" y="392" text-anchor="middle" font-size="11" fill="#607d8b">COM14 · USART1 PA9/10 (CH340)</text>
+
+  <!-- F407 -> F103 -->
+  <line x1="762" y1="160" x2="878" y2="160" stroke="#0097a7" stroke-width="3" marker-end="url(#arrowC)"/>
+  <text x="820" y="150" text-anchor="middle" font-size="11.5" fill="#006064">Modbus RTU 9600</text>
+  <text x="820" y="182" text-anchor="middle" font-size="10.5" fill="#607d8b">USART3 PB10/11 ↔ USART2 PA2/3 · 交叉+GND</text>
+
+  <defs>
+    <marker id="arrowB" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#1976d2"/>
+    </marker>
+    <marker id="arrowC" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#0097a7"/>
+    </marker>
+  </defs>
+</svg>
