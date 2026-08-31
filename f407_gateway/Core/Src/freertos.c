@@ -272,7 +272,7 @@ void Alert_Task(void *argument)
 
 /* ================================================================
  * wd_task —— 系统服务层看门狗（最低优先级 osPriorityIdle）
- *   借鉴工业架构"系统服务层": IWDG 喂狗职责从 GW_Task 下沉至此,
+ *   IWDG 喂狗职责从业务任务 GW_Task 下沉至独立 WD_Task:
  *   各业务任务仅上报心跳(WD_Task_Alive), 由本任务统一巡检。
  *   - 每秒巡检 4 个业务任务心跳:
  *       全健康  → HAL_IWDG_Refresh(正常喂狗)
