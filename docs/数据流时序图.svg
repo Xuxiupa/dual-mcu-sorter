@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1080" font-family="'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif">
+  <defs>
+    <marker id="a-blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#1976d2"/>
+    </marker>
+    <marker id="a-orange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#ef6c00"/>
+    </marker>
+    <marker id="a-purple" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#8e24aa"/>
+    </marker>
+    <marker id="a-gray" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#90a4ae"/>
+    </marker>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="1080" fill="#fafafa"/>
+
+  <!-- ===== 标题 ===== -->
+  <text x="600" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#1a237e">双 MCU 物料自动分拣系统 · 数据流时序图</text>
+  <text x="600" y="56" text-anchor="middle" font-size="13" fill="#546e7a">单分拣周期：PC 指令下发 → F407 网关聚合 → F103 执行 → 状态回传 → GUI 刷新 / W25Q64 黑匣子落盘</text>
+
+  <!-- ===== 参与者框 ===== -->
+  <!-- PC 上位机 -->
+  <rect x="110" y="82" width="220" height="54" rx="10" fill="#1976d2" filter="url(#shadow)"/>
+  <text x="220" y="108" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">PC 上位机</text>
+  <text x="220" y="128" text-anchor="middle" font-size="11" fill="#e3f2fd">tkinter GUI · Modbus 从站 0x02</text>
+  <!-- F407 网关 -->
+  <rect x="490" y="82" width="220" height="54" rx="10" fill="#ef6c00" filter="url(#shadow)"/>
+  <text x="600" y="108" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">F407 网关</text>
+  <text x="600" y="128" text-anchor="middle" font-size="11" fill="#fff3e0">FreeRTOS · 主站 0x01 + 从站 0x02</text>
+  <!-- F103 执行端 -->
+  <rect x="870" y="82" width="220" height="54" rx="10" fill="#8e24aa" filter="url(#shadow)"/>
+  <text x="980" y="108" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">F103 执行端</text>
+  <text x="980" y="128" text-anchor="middle" font-size="11" fill="#f3e5f5">裸机 · Modbus 从站 0x01</text>
+
+  <!-- ===== 生命线 ===== -->
+  <line x1="220" y1="136" x2="220" y2="905" stroke="#90caf9" stroke-width="2" stroke-dasharray="6 4"/>
+  <line x1="600" y1="136" x2="600" y2="905" stroke="#ffb74d" stroke-width="2" stroke-dasharray="6 4"/>
+  <line x1="980" y1="136" x2="980" y2="905" stroke="#ce93d8" stroke-width="2" stroke-dasharray="6 4"/>
+
+  <!-- ===== 激活条 ===== -->
+  <rect x="216" y="150" width="8" height="66" rx="3" fill="#1976d2"/>
+  <rect x="216" y="696" width="8" height="204" rx="3" fill="#1976d2"/>
+  <rect x="596" y="212" width="8" height="560" rx="3" fill="#ef6c00"/>
+  <rect x="976" y="350" width="8" height="92" rx="3" fill="#8e24aa"/>
+  <rect x="976" y="526" width="8" height="92" rx="3" fill="#8e24aa"/>
+
+  <!-- ===== 时间轴标尺 ===== -->
+  <line x1="55" y1="150" x2="55" y2="900" stroke="#cfd8dc" stroke-width="2"/>
+  <text x="48" y="155" text-anchor="end" font-size="12" font-weight="600" fill="#607d8b">T0</text>
+  <text x="40" y="158" text-anchor="end" font-size="9" fill="#90a4ae">指令下发</text>
+  <text x="48" y="905" text-anchor="end" font-size="12" font-weight="600" fill="#607d8b">T_end</text>
+  <text x="40" y="908" text-anchor="end" font-size="9" fill="#90a4ae">周期结束</text>
+
+  <!-- ===== 消息序列 ===== -->
+  <!-- ① PC 自激活：操作员下发指令 -->
+  <circle cx="220" cy="172" r="4" fill="#1976d2"/>
+  <text x="236" y="176" font-size="12" font-weight="600" fill="#0d47a1">① 操作员点击「分拣 A」→ 写保持寄存器（指令下发）</text>
+
+  <!-- ② PC → F407：Modbus 写指令 -->
+  <line x1="224" y1="216" x2="596" y2="216" stroke="#1976d2" stroke-width="2" marker-end="url(#a-blue)"/>
+  <text x="410" y="208" text-anchor="middle" font-size="12" font-weight="700" fill="#1565c0">② Modbus-RTU 写指令 · USB/CH340G 9600 8N1</text>
+  <text x="410" y="230" text-anchor="middle" font-size="10.5" fill="#455a64">功能码 0x10 写多寄存器 · 分拣类型 / 电机转速 / 阈值</text>
+
+  <!-- ③ F407 自激活：ISR 收帧 -->
+  <circle cx="600" cy="262" r="4" fill="#ef6c00"/>
+  <text x="616" y="266" font-size="12" font-weight="600" fill="#e65100">③ ISR 收帧 → 事件组置位（从站 0x02 立即返回，不阻塞）</text>
+
+  <!-- ④ F407 自激活：指令入镜像 + FIFO -->
+  <circle cx="600" cy="306" r="4" fill="#ef6c00"/>
+  <text x="616" y="310" font-size="12" font-weight="600" fill="#e65100">④ 指令入寄存器镜像 + 指令 FIFO（DELIVER-ALL 逐条 / COALESCE 合并）</text>
+
+  <!-- ⑤ F407 → F103：主站轮询读传感 -->
+  <line x1="604" y1="350" x2="976" y2="350" stroke="#ef6c00" stroke-width="2" marker-end="url(#a-orange)"/>
+  <text x="790" y="342" text-anchor="middle" font-size="12" font-weight="700" fill="#e65100">⑤ Modbus 主站轮询读传感器（Read Holding 0x01）</text>
+  <text x="790" y="364" text-anchor="middle" font-size="10.5" fill="#455a64">功能码 0x03 · 光敏 / 红外 / 热敏 ADC 值 + 计数</text>
+
+  <!-- ⑥ F103 自激活：ADC+DMA 扫描 -->
+  <circle cx="980" cy="394" r="4" fill="#8e24aa"/>
+  <text x="996" y="398" font-size="12" font-weight="600" fill="#6a1b9a">⑥ ADC+DMA 三路循环扫描（光敏 / 反射红外 / 热敏）</text>
+
+  <!-- ⑦ F103 → F407：回传传感数据 -->
+  <line x1="976" y1="438" x2="604" y2="438" stroke="#8e24aa" stroke-width="2" marker-end="url(#a-purple)"/>
+  <text x="790" y="430" text-anchor="middle" font-size="12" font-weight="700" fill="#6a1b9a">⑦ 回传遥测帧（计数 + 三路传感 + 状态字节）</text>
+  <text x="790" y="452" text-anchor="middle" font-size="10.5" fill="#455a64">CRC16 校验 · 错帧丢弃后由 ⑤ 重轮询</text>
+
+  <!-- ⑧ F407 自激活：解帧入共享区 -->
+  <circle cx="600" cy="482" r="4" fill="#ef6c00"/>
+  <text x="616" y="486" font-size="12" font-weight="600" fill="#e65100">⑧ 解帧 / CRC → 共享数据区 → ui_task 刷新 OLED（事件驱动）</text>
+
+  <!-- ⑨ F407 → F103：写控制 -->
+  <line x1="604" y1="526" x2="976" y2="526" stroke="#ef6c00" stroke-width="2" marker-end="url(#a-orange)"/>
+  <text x="790" y="518" text-anchor="middle" font-size="12" font-weight="700" fill="#e65100">⑨ Modbus 写控制（Write 0x01）</text>
+  <text x="790" y="540" text-anchor="middle" font-size="10.5" fill="#455a64">分拣槽 A / 电机 PWM 转速 / 分类阈值</text>
+
+  <!-- ⑩ F103 自激活：执行分拣 -->
+  <circle cx="980" cy="570" r="4" fill="#8e24aa"/>
+  <text x="996" y="574" font-size="12" font-weight="600" fill="#6a1b9a">⑩ 舵机 A 分槽 + 电机 PWM 开环 + 对射计数（EXTI 双层去抖）</text>
+
+  <!-- ⑪ F103 → F407：回传状态 -->
+  <line x1="976" y1="614" x2="604" y2="614" stroke="#8e24aa" stroke-width="2" marker-end="url(#a-purple)"/>
+  <text x="790" y="606" text-anchor="middle" font-size="12" font-weight="700" fill="#6a1b9a">⑪ 回传执行状态帧（计数 / 故障码 Err）</text>
+  <text x="790" y="628" text-anchor="middle" font-size="10.5" fill="#455a64">F103 故障 → 独立安全停机（fail-safe）不依赖 F407</text>
+
+  <!-- ⑫ F407 自激活：聚合写镜像 -->
+  <circle cx="600" cy="658" r="4" fill="#ef6c00"/>
+  <text x="616" y="662" font-size="12" font-weight="600" fill="#e65100">⑫ 聚合两端状态 → 写寄存器镜像（从站 0x02 数据源）</text>
+
+  <!-- ⑬ F407 → PC：应答 -->
+  <line x1="596" y1="702" x2="224" y2="702" stroke="#ef6c00" stroke-width="2" marker-end="url(#a-orange)"/>
+  <text x="410" y="694" text-anchor="middle" font-size="12" font-weight="700" fill="#e65100">⑬ Modbus 应答（Read/Write Response）寄存器镜像</text>
+  <text x="410" y="716" text-anchor="middle" font-size="10.5" fill="#455a64">PC GUI 周期读取 · 无浮点压缩整型</text>
+
+  <!-- ⑭ PC 自激活：GUI 刷新 -->
+  <circle cx="220" cy="746" r="4" fill="#1976d2"/>
+  <text x="236" y="750" font-size="12" font-weight="600" fill="#0d47a1">⑭ GUI 刷新 四路传感 / 状态 / 计数曲线（matplotlib）</text>
+
+  <!-- ⑮ F407 自激活：告警 -->
+  <circle cx="600" cy="800" r="4" fill="#ef6c00"/>
+  <text x="616" y="804" font-size="12" font-weight="600" fill="#e65100">⑮ 故障码 → alert_task 告警（BEEP + 状态灯）</text>
+
+  <!-- ⑯ F407 自激活：黑匣子 -->
+  <circle cx="600" cy="844" r="4" fill="#ef6c00"/>
+  <text x="616" y="848" font-size="12" font-weight="600" fill="#e65100">⑯ bb_task 写入 W25Q64 黑匣子（环形日志 / 磨损均衡）</text>
+
+  <!-- ⑰ PC 自激活：黑匣子复盘 -->
+  <circle cx="220" cy="888" r="4" fill="#1976d2"/>
+  <text x="236" y="892" font-size="12" font-weight="600" fill="#0d47a1">⑰ 黑匣子查看 → CSV / JSON 导出复盘</text>
+
+  <!-- 周期边界 -->
+  <line x1="80" y1="918" x2="1120" y2="918" stroke="#cfd8dc" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <text x="600" y="912" text-anchor="middle" font-size="11" font-style="italic" fill="#90a4ae">▲ 周期边界：下一指令 / 轮询触发，回到 ① 循环（F407 轮询周期对齐）</text>
+
+  <!-- ===== 底部：数据落地 ===== -->
+  <rect x="110" y="935" width="340" height="96" rx="8" fill="#e3f2fd" stroke="#90caf9"/>
+  <text x="128" y="957" font-size="12.5" font-weight="700" fill="#0d47a1">PC 端数据落地</text>
+  <text x="128" y="977" font-size="11" fill="#37474f">· GUI 实时监视四路传感 / 状态灯</text>
+  <text x="128" y="995" font-size="11" fill="#37474f">· 指令 / 寄存器镜像下发</text>
+  <text x="128" y="1013" font-size="11" fill="#37474f">· 黑匣子 CSV / JSON 导出复盘</text>
+
+  <rect x="470" y="935" width="340" height="96" rx="8" fill="#fff3e0" stroke="#ffb74d"/>
+  <text x="488" y="957" font-size="12.5" font-weight="700" fill="#e65100">F407 网关数据落地</text>
+  <text x="488" y="977" font-size="11" fill="#37474f">· OLED 实时显示状态</text>
+  <text x="488" y="995" font-size="11" fill="#37474f">· 寄存器镜像双角色隔离</text>
+  <text x="488" y="1013" font-size="11" fill="#37474f">· W25Q64 黑匣子环形日志</text>
+
+  <rect x="830" y="935" width="260" height="96" rx="8" fill="#f3e5f5" stroke="#ce93d8"/>
+  <text x="848" y="957" font-size="12.5" font-weight="700" fill="#6a1b9a">F103 执行端落地</text>
+  <text x="848" y="977" font-size="11" fill="#37474f">· 本地计数 / 状态</text>
+  <text x="848" y="995" font-size="11" fill="#37474f">· 随采随执行无持久化</text>
+  <text x="848" y="1013" font-size="11" fill="#37474f">· 故障码回传 + 安全停机</text>
+
+  <!-- ===== 图例 ===== -->
+  <rect x="110" y="1050" width="990" height="14" rx="4" fill="#eceff1"/>
+  <text x="120" y="1061" font-size="10" fill="#546e7a">箭头方向 = 数据流向 ｜ 圆点 = 节点内部动作（采集 / 中断 / 解析 / 推送 / 落盘）｜ 激活条 = 该节点任务活跃区间</text>
+</svg>

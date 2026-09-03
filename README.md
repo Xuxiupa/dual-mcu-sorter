@@ -5,6 +5,8 @@
 ## 目录
 
 - [项目简介](#项目简介)
+- [系统架构](#系统架构)
+- [数据流时序](#数据流时序)
 - [硬件环境](#硬件环境)
 - [软件特性](#软件特性)
 - [FreeRTOS 任务划分](#freertos-任务划分)
@@ -22,6 +24,18 @@
 - **PC 上位机(tkinter + matplotlib)**: USB 串口(Modbus RTU)连接 F407 → 实时面板查看寄存器/状态灯/SENSE 曲线 → 下发分拣/启停/复位指令; 支持黑匣子 CSV/JSON 导出。
 
 三层通信全部为 **Modbus RTU 半双工 9600 8N1**, 无 LWIP/以太网。
+
+## 系统架构
+
+![双 MCU 物料自动分拣系统架构图](docs/架构图.svg)
+
+> 七层分层架构: PC 上位机 → 通信传输 → 业务应用 (F407 RTOS / F103 裸机) → 协议中间件 (Modbus 双角色) → 系统服务 (IWDG + 黑匣子 + BKPSRAM 旁路) → 硬件抽象 (BSP) → 双 MCU 平台。详见 [`docs/架构图.svg`](docs/架构图.svg) 与 [`docs/数据流时序图.svg`](docs/数据流时序图.svg)。
+
+## 数据流时序
+
+![双 MCU 物料自动分拣系统数据流时序图](docs/数据流时序图.svg)
+
+> 单分拣周期端到端时序: PC 指令下发(Modbus 从站 0x02) → F407 网关聚合(主站 0x01 轮询 F103 + 寄存器镜像 + FIFO 补发) → F103 执行(ADC+DMA / 舵机分拣 / 对射计数) → 状态回传 → GUI 刷新 / W25Q64 黑匣子落盘。矢量图见 [`docs/数据流时序图.svg`](docs/数据流时序图.svg)。
 
 ## 硬件环境
 
@@ -81,9 +95,13 @@ F103 端为裸机主循环 + DMA + EXTI, 不上 RTOS(节省 20 KB RAM, 业务足
 ├── README.md           ← 仓库首页(本文件,项目包装)
 ├── LICENSE             ← MIT 开源协议
 ├── .gitignore          ← 排除 Keil 构建产物 / .workbuddy / pycache 等
-├── docs/               ← 详细文档(BOM/寄存器映射/构建烧录/演示手册/架构图)
-│   └── README.md       ← 主文档(项目全貌)
+├── docs/               ← 架构图 + 数据流时序图
+│   ├── 架构图.svg      ← 7 层系统架构(矢量,无损缩放)
+│   ├── 架构图.png      ← 同上(嵌入 README/PPT 用)
+│   ├── 数据流时序图.svg← 单分拣周期端到端时序(矢量)
+│   └── 数据流时序图.png← 同上(嵌入 README/PPT 用)
 ├── f407_gateway/       ← STM32F407 网关固件 (Modbus 主从 + FreeRTOS 五任务)
+├── f103_executor/      ← STM32F103 执行端固件 (ADC+DMA / 传感融合 / 舵机分拣)
 └── pc_tools/           ← PC 上位机(GUI/实时监控/探针脚本)
     ├── sorter_gui.py   ← tkinter 主界面 + matplotlib 曲线
     ├── live_view.py    ← 命令行实时查看
@@ -91,7 +109,7 @@ F103 端为裸机主循环 + DMA + EXTI, 不上 RTOS(节省 20 KB RAM, 业务足
     └── run_gui.bat     ← Windows 一键启动
 ```
 
-> 完整固件工程(f407_gateway / f103_executor)的文件树在 [`docs/README.md`](docs/README.md)。
+> 完整固件工程(f407_gateway / f103_executor)的文件树见各工程目录(`f407_gateway/`、`f103_executor/`)下的 `MDK-ARM/*.uvprojx` 与源码树。
 
 ## 编译与烧录指南
 
@@ -119,4 +137,4 @@ MIT License — 详见 [LICENSE](LICENSE)。
 
 ---
 
-📖 **想看完整手册**(架构图、BOM、引脚表、完整寄存器映射、FreeRTOS 设计细节、调试案例、已知限制)?请打开 [`docs/README.md`](docs/README.md)。
+📖 **想看完整手册**(架构图、数据流时序、BOM、引脚表、完整寄存器映射、FreeRTOS 设计细节、调试案例、已知限制)?请查看 [`docs/架构图.svg`](docs/架构图.svg)、[`docs/数据流时序图.svg`](docs/数据流时序图.svg)，以及 `f407_gateway/`、`f103_executor/` 内的源码与 CubeMX 配置。
